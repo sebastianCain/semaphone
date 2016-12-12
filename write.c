@@ -31,16 +31,17 @@ int main() {
   
   int *shmaddr = shmat(shmd, 0, 0);  //size??
   int fd = open("resource.txt", O_RDWR | O_APPEND, 0666);
-  char *line;
+  char *line = malloc(100);
   lseek(fd, -(*shmaddr), SEEK_END);
   read(fd, line, *shmaddr);
+  printf("Last line: %s\n", line);
   printf("Next line:");
-  char *buff;
+  char *buff = malloc(100);
   fgets(buff, 100, stdin);
   write(fd, buff, 100);
   
-  b.sem_op = 1;
-  semop(semd, &b, 1);
-  printf("%p\n", shmaddr);
+  //b.sem_op = 1;
+  //semop(semd, &b, 1);
+  printf("%d\n", *shmaddr);
   return 0;
 }

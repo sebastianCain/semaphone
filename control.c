@@ -11,7 +11,7 @@
 #include <string.h>
 
 void printStory() {
-  int fd = open("resource.txt", O_CREAT | O_TRUNC | O_EXCL, 0666);
+  int fd = open("resource.txt", 0, 0666);
   void *buff = malloc(1000);
   read(fd, buff, 1000);
   printf("%s\n", buff);
@@ -27,10 +27,14 @@ int main(int argc, char *argv[]) {
     
     //shared mem
     int shmd = shmget(ftok("resource.txt", 1234), 100, IPC_CREAT | 0666); 
-    
+    //void *shmaddr = malloc(100);
+    //shmat(shmd, shmaddr, 0);
+
     //semaphores
     int semd  = semget(ftok("resource.txt", 5678), 1, IPC_CREAT | 0666);
-    semctl(semd, 0, SETVAL, 1);
+    union semun su;
+    su.val = 1;
+    semctl(semd, 0, SETVAL, su);
 
   } else if (strcmp(flag, "-r") == 0) {
     
@@ -39,6 +43,8 @@ int main(int argc, char *argv[]) {
     //shared mem
     int shmd = shmget(ftok("resource.txt", 1234), 100, 0666);
     shmctl(shmd, IPC_RMID, NULL); 
+    //void *shmaddr = shmat(shmd, 0, 0);
+    //shmdt(shmaddr);
 
     //semaphores
     int semd  = semget(ftok("resource.txt", 5678), 1, IPC_CREAT | 0666);
