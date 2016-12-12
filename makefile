@@ -5,4 +5,4 @@ write: write.c
 	gcc write.c -o write
 
 clean:
-	rm *~
+	rm *~ control write resource.txt
